@@ -39,6 +39,11 @@ namespace MyDesktop.UI
             }
         }
 
+        private void lnkCreate_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            OpenWizard(false);
+        }
+
         private void OpenWizard(bool first)
         {
             using (var w = new AccountWizard(_cfg, first))
@@ -77,7 +82,7 @@ namespace MyDesktop.UI
             {
                 bool admin = false;
                 var node = r.Data?["account"]?["admin"];
-                if (node != null) admin = node.Value<bool>();
+                if (node != null) admin = node.ToObject<bool>();
                 Session.Set(login, admin);
                 _cfg.LastLogin = login; _cfg.Save();
                 DialogResult = DialogResult.OK;

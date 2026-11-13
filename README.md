@@ -1,12 +1,12 @@
 # MyDesktop
 
-Приложение (Windows Forms, .NET Framework 4.7) + серверная часть на VPS по `/mydesktop/`.
+Приложение (Windows Forms, .NET Framework 4.8) + серверная часть на VPS по `/mydesktop/`.
 **Полностью изолировано от NareLauncher**: свой репозиторий, свои порты, свои сервисы.
 
 ## Структура
 ```
 MyDesktop.sln
-MyDesktop/                  — WinForms-приложение (net47, Costura.Fody → один exe)
+MyDesktop/                  — WinForms-приложение (net48, Costura.Fody → один exe)
   Program.cs                — точка входа (логин → главная форма)
   Core/                     — AppConfig, ApiClient (к :2450), Session
   UI/                       — тёмная тема, FormBase, Login, AccountWizard, MainForm

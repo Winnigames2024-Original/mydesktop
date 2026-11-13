@@ -75,7 +75,7 @@ namespace MyDesktop.Core
             try
             {
                 var text = await _http.GetStringAsync(_base + "/api/count").ConfigureAwait(false);
-                return JObject.Parse(text)["count"]?.Value<int>() ?? 0;
+                return JObject.Parse(text)["count"]?.ToObject<int>() ?? 0;
             }
             catch { return -1; } // -1 = сервер недоступен
         }
