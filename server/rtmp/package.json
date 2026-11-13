@@ -1,0 +1,13 @@
+{
+  "name": "mydesktop-rtmp",
+  "version": "1.0.0",
+  "private": true,
+  "description": "MyDesktop RTMP/HLS media server (ports 1936/8001), isolated from NareLauncher",
+  "main": "rtmp.js",
+  "scripts": {
+    "start": "node rtmp.js"
+  },
+  "dependencies": {
+    "node-media-server": "^2.7.0"
+  }
+}

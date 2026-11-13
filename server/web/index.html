@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MyDesktop</title>
+<style>
+  :root{
+    --bg:#0d0f14; --surface:#161a22; --surface2:#1e2430; --line:#262d3a;
+    --text:#e8ecf3; --muted:#8a93a6; --accent:#5b8cff; --accent2:#7c5cff;
+    --danger:#ff5b6e; --ok:#3ddc84; --radius:16px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:radial-gradient(1200px 600px at 70% -10%,#1a2030 0%,var(--bg) 60%);
+    color:var(--text);font:15px/1.5 "Segoe UI",system-ui,sans-serif;min-height:100vh}
+  .wrap{max-width:440px;margin:7vh auto;padding:0 20px}
+  .logo{display:flex;align-items:center;gap:12px;margin-bottom:24px}
+  .logo .mark{width:40px;height:40px;border-radius:12px;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 8px 24px #5b8cff40}
+  .logo h1{font-size:22px;margin:0;font-weight:650;letter-spacing:.2px}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+    padding:24px;box-shadow:0 20px 60px #0008}
+  .tabs{display:flex;gap:6px;margin-bottom:18px;background:var(--surface2);padding:5px;border-radius:12px}
+  .tabs button{flex:1;border:0;background:transparent;color:var(--muted);padding:9px;border-radius:9px;
+    cursor:pointer;font-weight:600;transition:.2s}
+  .tabs button.active{background:var(--accent);color:#fff;box-shadow:0 6px 18px #5b8cff50}
+  label{display:block;font-size:13px;color:var(--muted);margin:14px 0 6px}
+  input{width:100%;padding:12px 14px;background:var(--surface2);border:1px solid var(--line);
+    border-radius:12px;color:var(--text);font-size:15px;outline:none;transition:.2s}
+  input:focus{border-color:var(--accent);box-shadow:0 0 0 3px #5b8cff30}
+  .btn{width:100%;margin-top:20px;padding:13px;border:0;border-radius:12px;font-size:15px;font-weight:650;
+    cursor:pointer;color:#fff;background:linear-gradient(135deg,var(--accent),var(--accent2));
+    transition:.15s;box-shadow:0 10px 26px #5b8cff40}
+  .btn:hover{transform:translateY(-1px)}
+  .btn.danger{background:linear-gradient(135deg,#ff5b6e,#ff8f5b);box-shadow:0 10px 26px #ff5b6e40}
+  .msg{margin-top:16px;padding:11px 14px;border-radius:11px;font-size:14px;display:none}
+  .msg.ok{display:block;background:#12301f;color:var(--ok);border:1px solid #1f5a39}
+  .msg.err{display:block;background:#311519;color:var(--danger);border:1px solid #5a1f28}
+  .foot{margin-top:18px;text-align:center;color:var(--muted);font-size:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="logo"><div class="mark"></div><h1>MyDesktop</h1></div>
+  <div class="card">
+    <div class="tabs">
+      <button id="tab-login" class="active" onclick="setTab('login')">Вход</button>
+      <button id="tab-reg" onclick="setTab('reg')">Регистрация</button>
+      <button id="tab-del" onclick="setTab('del')">Удалить</button>
+    </div>
+    <label>Логин</label>
+    <input id="login" autocomplete="username" placeholder="3–32: буквы, цифры, . _ -">
+    <label>Пароль</label>
+    <input id="password" type="password" autocomplete="current-password" placeholder="минимум 6 символов">
+    <button class="btn" id="submit" onclick="submit()">Войти</button>
+    <div class="msg" id="msg"></div>
+  </div>
+  <div class="foot">Аккаунты общие с приложением MyDesktop · scrypt</div>
+</div>
+<script>
+  // nginx отдаёт этот сайт по /mydesktop/, API — там же под /mydesktop/api/
+  const API = (location.pathname.replace(/\/index\.html$/,'').replace(/\/$/,'')) || '';
+  let tab = 'login';
+  function setTab(t){
+    tab = t;
+    for (const id of ['login','reg','del']) document.getElementById('tab-'+id).classList.toggle('active', id===t);
+    const b = document.getElementById('submit');
+    b.textContent = t==='login' ? 'Войти' : t==='reg' ? 'Создать аккаунт' : 'Удалить аккаунт';
+    b.classList.toggle('danger', t==='del');
+    show('', null);
+  }
+  function show(text, ok){
+    const m = document.getElementById('msg');
+    m.className = 'msg' + (text ? (ok ? ' ok' : ' err') : '');
+    m.textContent = text;
+  }
+  async function submit(){
+    const login = document.getElementById('login').value.trim();
+    const password = document.getElementById('password').value;
+    const ep = tab==='login' ? '/api/login' : tab==='reg' ? '/api/register' : '/api/delete';
+    try{
+      const r = await fetch(API + ep, {method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({login, password})});
+      const j = await r.json();
+      if(!r.ok){ show(j.message || j.error || 'Ошибка', false); return; }
+      show(tab==='login' ? 'Вход выполнен' : tab==='reg' ? 'Аккаунт создан' : 'Аккаунт удалён', true);
+    }catch(e){ show('Нет связи с сервером', false); }
+  }
+</script>
+</body>
+</html>

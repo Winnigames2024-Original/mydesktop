@@ -1,0 +1,14 @@
+# Visual Studio / .NET
+bin/
+obj/
+.vs/
+*.user
+*.suo
+packages/
+# Node
+node_modules/
+server/*/node_modules/
+# Серверные данные (не коммитим)
+data/
+media/
+app/MyDesktop.exe

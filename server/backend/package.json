@@ -1,0 +1,11 @@
+{
+  "name": "mydesktop-backend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "MyDesktop backend on port 2450 — scrypt accounts (shared with web) + update.json. Isolated from NareLauncher.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {}
+}
