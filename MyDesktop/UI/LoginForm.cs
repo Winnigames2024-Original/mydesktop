@@ -81,8 +81,10 @@ namespace MyDesktop.UI
             if (r.Ok)
             {
                 bool admin = false;
-                var node = r.Data?["account"]?["admin"];
-                if (node != null) admin = node.ToObject<bool>();
+                if (r.Data != null && r.Data.TryGetValue("account", out var accObj)
+                    && accObj is System.Collections.Generic.Dictionary<string, object> acc
+                    && acc.TryGetValue("admin", out var av) && av is bool bv)
+                    admin = bv;
                 Session.Set(login, admin);
                 _cfg.LastLogin = login; _cfg.Save();
                 DialogResult = DialogResult.OK;

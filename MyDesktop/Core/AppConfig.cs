@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Web.Script.Serialization;
 
 namespace MyDesktop.Core
 {
@@ -41,7 +42,7 @@ namespace MyDesktop.Core
                 if (File.Exists(FilePath))
                 {
                     var json = File.ReadAllText(FilePath);
-                    var cfg = Newtonsoft.Json.JsonConvert.DeserializeObject<AppConfig>(json);
+                    var cfg = new JavaScriptSerializer().Deserialize<AppConfig>(json);
                     if (cfg != null) return cfg;
                 }
             }
@@ -54,7 +55,7 @@ namespace MyDesktop.Core
             try
             {
                 Directory.CreateDirectory(Dir);
-                File.WriteAllText(FilePath, Newtonsoft.Json.JsonConvert.SerializeObject(this, Newtonsoft.Json.Formatting.Indented));
+                File.WriteAllText(FilePath, new JavaScriptSerializer().Serialize(this));
             }
             catch { /* не критично */ }
         }

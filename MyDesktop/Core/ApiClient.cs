@@ -1,9 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using System.Web.Script.Serialization;
 
 namespace MyDesktop.Core
 {
@@ -12,7 +12,7 @@ namespace MyDesktop.Core
     {
         public bool Ok;
         public string Message;
-        public JObject Data;
+        public Dictionary<string, object> Data;
         public static ApiResult Fail(string m) => new ApiResult { Ok = false, Message = m };
     }
 
@@ -26,13 +26,14 @@ namespace MyDesktop.Core
 
     /// <summary>
     /// Клиент бэкенда MyDesktop (:2450 через nginx /mydesktop/).
-    /// Пароли отправляются по HTTPS/HTTP на бэкенд, где хешируются scrypt.
-    /// Локально пароль нигде не сохраняется.
+    /// Без сторонних зависимостей: JSON через встроенный JavaScriptSerializer.
+    /// Пароль локально не сохраняется.
     /// </summary>
     public class ApiClient
     {
         private readonly HttpClient _http;
         private readonly string _base;
+        private readonly JavaScriptSerializer _js = new JavaScriptSerializer();
 
         public ApiClient(AppConfig cfg)
         {
@@ -40,20 +41,32 @@ namespace MyDesktop.Core
             _http = new HttpClient { Timeout = TimeSpan.FromSeconds(15) };
         }
 
+        private Dictionary<string, object> AsDict(string text)
+        {
+            try { return _js.DeserializeObject(text) as Dictionary<string, object>; }
+            catch { return null; }
+        }
+
         private async Task<ApiResult> PostJson(string path, object body)
         {
             try
             {
-                var json = JsonConvert.SerializeObject(body);
+                var json = _js.Serialize(body);
                 var resp = await _http.PostAsync(_base + path,
                     new StringContent(json, Encoding.UTF8, "application/json")).ConfigureAwait(false);
                 var text = await resp.Content.ReadAsStringAsync().ConfigureAwait(false);
-                JObject jo = null;
-                try { jo = JObject.Parse(text); } catch { }
+                var jo = AsDict(text);
                 if (resp.IsSuccessStatusCode)
                     return new ApiResult { Ok = true, Data = jo };
-                var msg = jo?["message"]?.ToString() ?? jo?["error"]?.ToString() ?? ("HTTP " + (int)resp.StatusCode);
-                return new ApiResult { Ok = false, Message = msg, Data = jo };
+
+                string msg = null;
+                if (jo != null)
+                {
+                    object v;
+                    if (jo.TryGetValue("message", out v) && v != null) msg = v.ToString();
+                    else if (jo.TryGetValue("error", out v) && v != null) msg = v.ToString();
+                }
+                return new ApiResult { Ok = false, Message = msg ?? ("HTTP " + (int)resp.StatusCode), Data = jo };
             }
             catch (Exception e)
             {
@@ -75,7 +88,11 @@ namespace MyDesktop.Core
             try
             {
                 var text = await _http.GetStringAsync(_base + "/api/count").ConfigureAwait(false);
-                return JObject.Parse(text)["count"]?.ToObject<int>() ?? 0;
+                var jo = AsDict(text);
+                object c;
+                if (jo != null && jo.TryGetValue("count", out c) && c != null)
+                    return Convert.ToInt32(c);
+                return 0;
             }
             catch { return -1; } // -1 = сервер недоступен
         }
@@ -85,7 +102,7 @@ namespace MyDesktop.Core
             try
             {
                 var text = await _http.GetStringAsync(_base + "/update.json").ConfigureAwait(false);
-                return JsonConvert.DeserializeObject<UpdateInfo>(text);
+                return _js.Deserialize<UpdateInfo>(text);
             }
             catch { return null; }
         }
