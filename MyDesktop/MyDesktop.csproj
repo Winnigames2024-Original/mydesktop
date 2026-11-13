@@ -57,15 +57,36 @@
     <Compile Include="Core\ApiClient.cs" />
     <Compile Include="Core\Session.cs" />
     <Compile Include="UI\Theme.cs" />
-    <Compile Include="UI\Controls\RoundedButton.cs" />
-    <Compile Include="UI\Controls\RoundedTextBox.cs" />
-    <Compile Include="UI\Controls\CardPanel.cs" />
-    <Compile Include="UI\FormBase.cs" />
-    <Compile Include="UI\LoginForm.cs" />
-    <Compile Include="UI\AccountWizard.cs" />
-    <Compile Include="UI\MainForm.cs" />
-    <Compile Include="UI\Panels\HomePanel.cs" />
+    <Compile Include="UI\LoginForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\LoginForm.Designer.cs">
+      <DependentUpon>LoginForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\AccountWizard.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\AccountWizard.Designer.cs">
+      <DependentUpon>AccountWizard.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="UI\LoginForm.resx">
+      <DependentUpon>LoginForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\AccountWizard.resx">
+      <DependentUpon>AccountWizard.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
