@@ -8,6 +8,6 @@
     "start": "node rtmp.js"
   },
   "dependencies": {
-    "node-media-server": "^2.7.0"
+    "node-media-server": "2.6.2"
   }
 }
