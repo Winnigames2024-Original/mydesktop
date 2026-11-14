@@ -2,12 +2,14 @@ using System;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using MyDesktop.Core;
+using MyDesktop.UI.Panels;
 
 namespace MyDesktop.UI
 {
     public partial class MainForm : Form
     {
         private readonly AppConfig _cfg;
+        private StreamPanel _stream;
 
         // Для конструктора форм Visual Studio.
         public MainForm()
@@ -19,6 +21,11 @@ namespace MyDesktop.UI
         {
             _cfg = cfg;
             lblUser.Text = "● " + (Session.Login ?? "") + (Session.IsAdmin ? "  (админ)" : "");
+
+            // панель трансляции встраиваем в область контента (поверх текстовых заглушек)
+            _stream = new StreamPanel(_cfg) { Dock = DockStyle.Fill, Visible = false };
+            pnlContent.Controls.Add(_stream);
+
             this.Shown += async (s, e) => await ShowSection("Главная");
         }
 
@@ -30,6 +37,9 @@ namespace MyDesktop.UI
 
         private async Task ShowSection(string name)
         {
+            bool stream = (name == "Трансляция");
+            if (_stream != null) { _stream.Visible = stream; if (stream) _stream.BringToFront(); }
+            lblContentTitle.Visible = lblContentText.Visible = !stream;
             lblStatus.Visible = (name == "Главная");
             switch (name)
             {

@@ -29,6 +29,7 @@ namespace MyDesktop.Core
         // Запомненный логин (без пароля)
         public string LastLogin = "";
         public string StreamKey = "";
+        public string FfmpegPath = "ffmpeg";   // путь к ffmpeg.exe или просто "ffmpeg" (из PATH)
 
         // ───────────────────────── хранение ─────────────────────────
         private static string Dir =>

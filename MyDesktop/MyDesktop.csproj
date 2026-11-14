@@ -53,7 +53,14 @@
     <Compile Include="Core\AppConfig.cs" />
     <Compile Include="Core\ApiClient.cs" />
     <Compile Include="Core\Session.cs" />
+    <Compile Include="Core\StreamEngine.cs" />
     <Compile Include="UI\Theme.cs" />
+    <Compile Include="UI\Panels\StreamPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Panels\StreamPanel.Designer.cs">
+      <DependentUpon>StreamPanel.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\LoginForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -83,6 +90,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Panels\StreamPanel.resx">
+      <DependentUpon>StreamPanel.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
