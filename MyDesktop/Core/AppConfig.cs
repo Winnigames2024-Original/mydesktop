@@ -4,9 +4,17 @@ using System.Web.Script.Serialization;
 
 namespace MyDesktop.Core
 {
+    /// <summary>Сохранённая цель быстрого подключения. Pw — пароль в виде DPAPI (не открытый).</summary>
+    public class RemotePeer
+    {
+        public string Login = "";
+        public string Pw = "";
+        public override string ToString() => Login;
+    }
+
     /// <summary>
     /// Настройки приложения. Хранятся в %AppData%\MyDesktop\config.json.
-    /// Пароли здесь НЕ хранятся — только на бэкенде (scrypt).
+    /// Открытые пароли здесь не хранятся — только DPAPI-шифртекст для автовхода/быстрого подключения.
     /// </summary>
     public class AppConfig
     {
@@ -35,6 +43,9 @@ namespace MyDesktop.Core
         // Автовход: пароль хранится локально только в зашифрованном виде (DPAPI)
         public bool AutoLogin = false;
         public string ProtectedPassword = "";
+
+        // Быстрое подключение: сохранённые цели (логин + зашифрованный пароль)
+        public System.Collections.Generic.List<RemotePeer> Peers = new System.Collections.Generic.List<RemotePeer>();
 
         // ───────────────────────── хранение ─────────────────────────
         private static string Dir =>

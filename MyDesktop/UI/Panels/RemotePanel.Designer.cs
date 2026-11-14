@@ -24,6 +24,10 @@ namespace MyDesktop.UI.Panels
             this.btnConnect = new System.Windows.Forms.Button();
             this.lblConnStatus = new System.Windows.Forms.Label();
             this.lblNote = new System.Windows.Forms.Label();
+            this.lblQuickHdr = new System.Windows.Forms.Label();
+            this.lstPeers = new System.Windows.Forms.ListBox();
+            this.btnQuick = new System.Windows.Forms.Button();
+            this.btnForget = new System.Windows.Forms.Button();
             this.SuspendLayout();
             //
             // lblHdr
@@ -163,11 +167,68 @@ namespace MyDesktop.UI.Panels
             this.lblNote.Size = new System.Drawing.Size(500, 60);
             this.lblNote.Text = "Подключение по логину и паролю аккаунта. Пока идёт показ экрана, на управляемой машине виден индикатор сессии.";
             //
+            // lblQuickHdr
+            //
+            this.lblQuickHdr.AutoSize = true;
+            this.lblQuickHdr.Font = new System.Drawing.Font("Segoe UI Semibold", 13F, System.Drawing.FontStyle.Bold);
+            this.lblQuickHdr.ForeColor = System.Drawing.Color.FromArgb(232, 236, 243);
+            this.lblQuickHdr.Location = new System.Drawing.Point(428, 18);
+            this.lblQuickHdr.Name = "lblQuickHdr";
+            this.lblQuickHdr.Size = new System.Drawing.Size(210, 25);
+            this.lblQuickHdr.TabIndex = 13;
+            this.lblQuickHdr.Text = "Быстрое подключение";
+            //
+            // lstPeers
+            //
+            this.lstPeers.BackColor = System.Drawing.Color.FromArgb(30, 36, 48);
+            this.lstPeers.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lstPeers.ForeColor = System.Drawing.Color.FromArgb(232, 236, 243);
+            this.lstPeers.ItemHeight = 17;
+            this.lstPeers.Location = new System.Drawing.Point(430, 54);
+            this.lstPeers.Name = "lstPeers";
+            this.lstPeers.Size = new System.Drawing.Size(300, 222);
+            this.lstPeers.TabIndex = 14;
+            this.lstPeers.DoubleClick += new System.EventHandler(this.btnQuick_Click);
+            //
+            // btnQuick
+            //
+            this.btnQuick.BackColor = System.Drawing.Color.FromArgb(91, 140, 255);
+            this.btnQuick.FlatAppearance.BorderSize = 0;
+            this.btnQuick.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnQuick.Font = new System.Drawing.Font("Segoe UI Semibold", 10F, System.Drawing.FontStyle.Bold);
+            this.btnQuick.ForeColor = System.Drawing.Color.White;
+            this.btnQuick.Location = new System.Drawing.Point(430, 286);
+            this.btnQuick.Name = "btnQuick";
+            this.btnQuick.Size = new System.Drawing.Size(300, 40);
+            this.btnQuick.TabIndex = 15;
+            this.btnQuick.Text = "Подключиться к выбранному";
+            this.btnQuick.UseVisualStyleBackColor = false;
+            this.btnQuick.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnQuick.Click += new System.EventHandler(this.btnQuick_Click);
+            //
+            // btnForget
+            //
+            this.btnForget.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(38, 45, 58);
+            this.btnForget.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnForget.ForeColor = System.Drawing.Color.FromArgb(255, 91, 110);
+            this.btnForget.Location = new System.Drawing.Point(430, 332);
+            this.btnForget.Name = "btnForget";
+            this.btnForget.Size = new System.Drawing.Size(300, 30);
+            this.btnForget.TabIndex = 16;
+            this.btnForget.Text = "Убрать из списка";
+            this.btnForget.UseVisualStyleBackColor = true;
+            this.btnForget.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnForget.Click += new System.EventHandler(this.btnForget_Click);
+            //
             // RemotePanel
             //
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(13, 15, 20);
+            this.Controls.Add(this.btnForget);
+            this.Controls.Add(this.btnQuick);
+            this.Controls.Add(this.lstPeers);
+            this.Controls.Add(this.lblQuickHdr);
             this.Controls.Add(this.lblNote);
             this.Controls.Add(this.lblConnStatus);
             this.Controls.Add(this.btnConnect);
@@ -200,5 +261,9 @@ namespace MyDesktop.UI.Panels
         private System.Windows.Forms.Button btnConnect;
         private System.Windows.Forms.Label lblConnStatus;
         private System.Windows.Forms.Label lblNote;
+        private System.Windows.Forms.Label lblQuickHdr;
+        private System.Windows.Forms.ListBox lstPeers;
+        private System.Windows.Forms.Button btnQuick;
+        private System.Windows.Forms.Button btnForget;
     }
 }

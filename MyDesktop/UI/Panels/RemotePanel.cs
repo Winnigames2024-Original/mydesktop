@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using MyDesktop.Core;
 
@@ -27,6 +28,25 @@ namespace MyDesktop.UI.Panels
             lblMyLogin.Text = string.IsNullOrEmpty(Session.Login) ? (_cfg.LastLogin ?? "—") : Session.Login;
             _engine.StateChanged += OnState;
             this.Disposed += (s, e) => { try { _engine.Stop(); } catch { } CloseIndicator(); };
+            RefreshPeers();
+        }
+
+        private void RefreshPeers()
+        {
+            lstPeers.Items.Clear();
+            foreach (var p in _cfg.Peers) lstPeers.Items.Add(p);
+        }
+
+        private void SavePeer(string login, string pass)
+        {
+            var key = login.ToLowerInvariant();
+            RemotePeer found = null;
+            foreach (var p in _cfg.Peers) if (p.Login.ToLowerInvariant() == key) { found = p; break; }
+            if (found == null) { found = new RemotePeer { Login = login }; _cfg.Peers.Add(found); }
+            found.Pw = Secret.Protect(pass);
+            while (_cfg.Peers.Count > 30) _cfg.Peers.RemoveAt(0);
+            _cfg.Save();
+            RefreshPeers();
         }
 
         private string MyKey => (string.IsNullOrEmpty(Session.Login) ? _cfg.LastLogin : Session.Login) ?? "screen";
@@ -73,16 +93,38 @@ namespace MyDesktop.UI.Panels
 
         // ── подключиться к другому ПК по логину и паролю ──
         private async void btnConnect_Click(object sender, EventArgs e)
+            => await DoConnect(txtLogin.Text.Trim(), txtPass.Text);
+
+        private async void btnQuick_Click(object sender, EventArgs e)
         {
-            var login = txtLogin.Text.Trim();
-            var pass = txtPass.Text;
+            var peer = lstPeers.SelectedItem as RemotePeer;
+            if (peer == null) { SetStatus("Выберите подключение из списка.", true); return; }
+            var pw = Secret.Unprotect(peer.Pw);
+            txtLogin.Text = peer.Login;
+            txtPass.Text = pw;
+            await DoConnect(peer.Login, pw);
+        }
+
+        private void btnForget_Click(object sender, EventArgs e)
+        {
+            var peer = lstPeers.SelectedItem as RemotePeer;
+            if (peer == null) return;
+            _cfg.Peers.Remove(peer);
+            _cfg.Save();
+            RefreshPeers();
+        }
+
+        private async Task DoConnect(string login, string pass)
+        {
             if (login.Length == 0 || pass.Length == 0) { SetStatus("Введите логин и пароль.", true); return; }
 
-            btnConnect.Enabled = false; btnConnect.Text = "Подключение…";
+            btnConnect.Enabled = false; btnQuick.Enabled = false; btnConnect.Text = "Подключение…";
             var r = await _api.LoginAsync(login, pass);   // проверка логина+пароля на бэкенде (scrypt)
-            btnConnect.Enabled = true; btnConnect.Text = "Подключиться";
+            btnConnect.Enabled = true; btnQuick.Enabled = true; btnConnect.Text = "Подключиться";
 
             if (!r.Ok) { SetStatus(r.Message ?? "Неверный логин или пароль.", true); return; }
+
+            SavePeer(login, pass);   // запоминаем для быстрого подключения
 
             // смотрим экран этого логина плеером ffplay по RTMP напрямую (без браузера, без задержки)
             var rtmp = _cfg.RtmpUrl.TrimEnd('/') + "/" + login;
