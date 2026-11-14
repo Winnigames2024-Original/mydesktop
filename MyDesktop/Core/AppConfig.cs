@@ -13,8 +13,8 @@ namespace MyDesktop.Core
         // VPS MyDesktop (НЕ пересекается с NareLauncher)
         public const string VpsIp = "151.245.217.104";
 
-        // Бэкенд доступен через nginx: http(s)://<host>/mydesktop/
-        public string BackendBase = "http://" + VpsIp + "/mydesktop";
+        // Бэкенд доступен через свой nginx-блок MyDesktop на отдельном порту :2451
+        public string BackendBase = "http://" + VpsIp + ":2451/mydesktop";
 
         // Трансляция: RTMP-пуш напрямую на :1936
         public string RtmpUrl = "rtmp://" + VpsIp + ":1936/live";

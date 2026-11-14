@@ -29,6 +29,7 @@ RAW_URL="https://raw.githubusercontent.com/${OWNER}/${REPO}/${BRANCH}"
 VPS_IP="${MYDESKTOP_IP:-151.245.217.104}"
 
 BACKEND_PORT=2450
+WEB_PORT=2451          # отдельный nginx-порт MyDesktop (свой server-блок, чужих сайтов не трогает)
 RTMP_PORT=1936
 HLS_PORT=8001
 HBBS_PORT=21116        # основной порт сигнального сервера RustDesk
@@ -264,54 +265,26 @@ location /mydesktop-hls/ {
 EOF
   log "nginx-сниппет записан: $NGINX_SNIPPET"
 
-  if [ -n "$NGINX_SITE" ] && [ -f "$NGINX_SITE" ]; then
-    if grep -q "snippets/mydesktop.conf" "$NGINX_SITE"; then
-      log "include уже есть в $NGINX_SITE."
-    else
-      cp -f "$NGINX_SITE" "$NGINX_SITE.mydesktop.bak.$(date +%s)"
-      # вставляем include ТОЛЬКО в первый server { … }, перед его закрывающей скобкой
-      awk '
-        BEGIN{done=0; depth=0; inserver=0}
-        /server[[:space:]]*\{/ && !done {inserver=1}
-        {
-          if(inserver){
-            n=gsub(/\{/,"{"); depth+=n;
-            m=gsub(/\}/,"}");
-            if(m>0){ depth-=m;
-              if(depth<=0 && !done){ print "    include snippets/mydesktop.conf;"; done=1; inserver=0 }
-            }
-          }
-          print
-        }
-      ' "$NGINX_SITE.mydesktop.bak."* > "$NGINX_SITE" 2>/dev/null || true
-      if nginx -t 2>/dev/null; then
-        systemctl reload nginx
-        log "include добавлен в $NGINX_SITE и nginx перезагружен."
-      else
-        warn "nginx -t не прошёл — откатываю $NGINX_SITE."
-        cp -f "$NGINX_SITE.mydesktop.bak."* "$NGINX_SITE"
-        nginx_manual_hint
-      fi
-    fi
-  else
-    nginx_manual_hint
-  fi
+  # Собственный server-блок MyDesktop на ОТДЕЛЬНОМ порту $WEB_PORT — новый файл в conf.d.
+  # Чужие сайты (narelauncher и любые другие) НЕ затрагиваются ничем.
+  cat >/etc/nginx/conf.d/mydesktop.conf <<EOF
+# MyDesktop — собственный блок. Слушает только :$WEB_PORT, проксирует /mydesktop/ на бэкенд.
+server {
+    listen $WEB_PORT;
+    listen [::]:$WEB_PORT;
+    server_name _;
+    include $NGINX_SNIPPET;
+    location = / { return 302 /mydesktop/; }
 }
-
-nginx_manual_hint(){
-  warn "Автоправку nginx не делаю (чтобы не задеть NareLauncher)."
-  cat <<EOF
-
-  Добавьте ОДНУ строку в НУЖНЫЙ server { } вашего сайта (где нужен путь /mydesktop/):
-
-      include snippets/mydesktop.conf;
-
-  затем:  nginx -t && systemctl reload nginx
-
-  Либо перезапустите установку, указав файл сайта явно:
-      MYDESKTOP_NGINX_SITE=/etc/nginx/sites-available/ВАШ_САЙТ \\
-        curl -fsSL $RAW_URL/setup.sh | bash
 EOF
+  log "nginx: свой блок /etc/nginx/conf.d/mydesktop.conf на порту $WEB_PORT (чужие сайты не трогаются)"
+
+  if nginx -t; then
+    systemctl reload nginx
+    log "nginx перезагружен — MyDesktop на :$WEB_PORT/mydesktop/"
+  else
+    warn "nginx -t не прошёл — conf.d/mydesktop.conf не активирован. Запустите 'nginx -t' и пришлите вывод."
+  fi
 }
 
 # ─────────────────────────── финал ───────────────────────────
@@ -322,7 +295,7 @@ print_summary(){
 
 \033[1;32m════════ MyDesktop установлен/обновлён ════════\033[0m
   backend     :$BACKEND_PORT   -> http://127.0.0.1:$BACKEND_PORT/api/health
-  веб         /mydesktop/      (после подключения nginx-сниппета)
+  веб/приложение  http://$VPS_IP:$WEB_PORT/mydesktop/   (свой nginx-блок, отдельный порт)
   RTMP push   rtmp://$VPS_IP:$RTMP_PORT/live/<key>
   HLS         http://$VPS_IP:$HLS_PORT/live/<key>/index.m3u8
   RustDesk    ID-сервер $VPS_IP:$HBBS_PORT   релей :$HBBR_PORT
