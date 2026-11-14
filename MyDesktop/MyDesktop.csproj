@@ -55,6 +55,7 @@
     <Compile Include="Core\ApiClient.cs" />
     <Compile Include="Core\Session.cs" />
     <Compile Include="Core\StreamEngine.cs" />
+    <Compile Include="Core\RustDeskManager.cs" />
     <Compile Include="Core\Effects\Effects.cs" />
     <Compile Include="Core\Startup.cs" />
     <Compile Include="Core\Secret.cs" />

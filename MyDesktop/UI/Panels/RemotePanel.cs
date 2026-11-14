@@ -28,8 +28,22 @@ namespace MyDesktop.UI.Panels
             lblMyLogin.Text = string.IsNullOrEmpty(Session.Login) ? (_cfg.LastLogin ?? "—") : Session.Login;
             _engine.StateChanged += OnState;
             this.Disposed += (s, e) => { try { _engine.Stop(); } catch { } CloseIndicator(); };
+            string keyShort = _cfg.RustdeskKey.Length > 14 ? _cfg.RustdeskKey.Substring(0, 14) + "…" : _cfg.RustdeskKey;
+            lblRelay.Text = "Релей: " + _cfg.RustdeskIdServer + " (ID :21116, relay :21117)\nКлюч сервера: " + keyShort;
             RefreshPeers();
         }
+
+        // ── RustDesk: управление через свой релей (права — на управляемой стороне) ──
+        private void btnRustdesk_Click(object sender, EventArgs e)
+        {
+            string err;
+            if (RustDeskManager.LaunchConfigured(_cfg, out err))
+                SetStatus("RustDesk настроен на ваш релей и запущен. ID, пароль и права — в окне RustDesk.", false);
+            else
+                SetStatus(err, true);
+        }
+
+        private void btnRustdeskDl_Click(object sender, EventArgs e) => RustDeskManager.OpenDownloadPage();
 
         private void RefreshPeers()
         {

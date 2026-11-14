@@ -28,6 +28,10 @@ namespace MyDesktop.UI.Panels
             this.lstPeers = new System.Windows.Forms.ListBox();
             this.btnQuick = new System.Windows.Forms.Button();
             this.btnForget = new System.Windows.Forms.Button();
+            this.lblRdHdr = new System.Windows.Forms.Label();
+            this.lblRelay = new System.Windows.Forms.Label();
+            this.btnRustdesk = new System.Windows.Forms.Button();
+            this.btnRustdeskDl = new System.Windows.Forms.Button();
             this.SuspendLayout();
             //
             // lblHdr
@@ -164,7 +168,7 @@ namespace MyDesktop.UI.Panels
             this.lblNote.ForeColor = System.Drawing.Color.FromArgb(138, 147, 166);
             this.lblNote.Location = new System.Drawing.Point(22, 448);
             this.lblNote.Name = "lblNote";
-            this.lblNote.Size = new System.Drawing.Size(500, 60);
+            this.lblNote.Size = new System.Drawing.Size(390, 60);
             this.lblNote.Text = "Подключение по логину и паролю аккаунта. Пока идёт показ экрана, на управляемой машине виден индикатор сессии.";
             //
             // lblQuickHdr
@@ -220,11 +224,65 @@ namespace MyDesktop.UI.Panels
             this.btnForget.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnForget.Click += new System.EventHandler(this.btnForget_Click);
             //
+            // lblRdHdr
+            //
+            this.lblRdHdr.AutoSize = true;
+            this.lblRdHdr.Font = new System.Drawing.Font("Segoe UI Semibold", 13F, System.Drawing.FontStyle.Bold);
+            this.lblRdHdr.ForeColor = System.Drawing.Color.FromArgb(232, 236, 243);
+            this.lblRdHdr.Location = new System.Drawing.Point(428, 372);
+            this.lblRdHdr.Name = "lblRdHdr";
+            this.lblRdHdr.Size = new System.Drawing.Size(260, 25);
+            this.lblRdHdr.TabIndex = 17;
+            this.lblRdHdr.Text = "RustDesk (управление, свой релей)";
+            //
+            // lblRelay
+            //
+            this.lblRelay.ForeColor = System.Drawing.Color.FromArgb(138, 147, 166);
+            this.lblRelay.Location = new System.Drawing.Point(430, 402);
+            this.lblRelay.Name = "lblRelay";
+            this.lblRelay.Size = new System.Drawing.Size(300, 36);
+            this.lblRelay.TabIndex = 18;
+            this.lblRelay.Text = "Релей: —";
+            //
+            // btnRustdesk
+            //
+            this.btnRustdesk.BackColor = System.Drawing.Color.FromArgb(124, 92, 255);
+            this.btnRustdesk.FlatAppearance.BorderSize = 0;
+            this.btnRustdesk.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnRustdesk.Font = new System.Drawing.Font("Segoe UI Semibold", 10F, System.Drawing.FontStyle.Bold);
+            this.btnRustdesk.ForeColor = System.Drawing.Color.White;
+            this.btnRustdesk.Location = new System.Drawing.Point(430, 444);
+            this.btnRustdesk.Name = "btnRustdesk";
+            this.btnRustdesk.Size = new System.Drawing.Size(300, 40);
+            this.btnRustdesk.TabIndex = 19;
+            this.btnRustdesk.Text = "Настроить и открыть RustDesk";
+            this.btnRustdesk.UseVisualStyleBackColor = false;
+            this.btnRustdesk.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnRustdesk.Click += new System.EventHandler(this.btnRustdesk_Click);
+            //
+            // btnRustdeskDl
+            //
+            this.btnRustdeskDl.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(38, 45, 58);
+            this.btnRustdeskDl.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnRustdeskDl.ForeColor = System.Drawing.Color.FromArgb(232, 236, 243);
+            this.btnRustdeskDl.Location = new System.Drawing.Point(430, 490);
+            this.btnRustdeskDl.Name = "btnRustdeskDl";
+            this.btnRustdeskDl.Size = new System.Drawing.Size(300, 28);
+            this.btnRustdeskDl.TabIndex = 20;
+            this.btnRustdeskDl.Text = "Скачать RustDesk";
+            this.btnRustdeskDl.UseVisualStyleBackColor = true;
+            this.btnRustdeskDl.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnRustdeskDl.Click += new System.EventHandler(this.btnRustdeskDl_Click);
+            //
             // RemotePanel
             //
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(13, 15, 20);
+            this.Controls.Add(this.btnRustdeskDl);
+            this.Controls.Add(this.btnRustdesk);
+            this.Controls.Add(this.lblRelay);
+            this.Controls.Add(this.lblRdHdr);
             this.Controls.Add(this.btnForget);
             this.Controls.Add(this.btnQuick);
             this.Controls.Add(this.lstPeers);
@@ -265,5 +323,9 @@ namespace MyDesktop.UI.Panels
         private System.Windows.Forms.ListBox lstPeers;
         private System.Windows.Forms.Button btnQuick;
         private System.Windows.Forms.Button btnForget;
+        private System.Windows.Forms.Label lblRdHdr;
+        private System.Windows.Forms.Label lblRelay;
+        private System.Windows.Forms.Button btnRustdesk;
+        private System.Windows.Forms.Button btnRustdeskDl;
     }
 }
