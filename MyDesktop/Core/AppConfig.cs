@@ -32,6 +32,10 @@ namespace MyDesktop.Core
         public string StreamKey = "";
         public string FfmpegPath = "ffmpeg";   // путь к ffmpeg.exe или просто "ffmpeg" (из PATH)
 
+        // Автовход: пароль хранится локально только в зашифрованном виде (DPAPI)
+        public bool AutoLogin = false;
+        public string ProtectedPassword = "";
+
         // ───────────────────────── хранение ─────────────────────────
         private static string Dir =>
             Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "MyDesktop");

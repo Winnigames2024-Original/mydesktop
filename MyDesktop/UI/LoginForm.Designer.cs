@@ -21,6 +21,8 @@ namespace MyDesktop.UI
             this.btnLogin = new System.Windows.Forms.Button();
             this.lblMsg = new System.Windows.Forms.Label();
             this.lnkCreate = new System.Windows.Forms.LinkLabel();
+            this.chkAutoLogin = new System.Windows.Forms.CheckBox();
+            this.chkRunStartup = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             //
             // lblTitle
@@ -111,10 +113,34 @@ namespace MyDesktop.UI
             //
             this.lblMsg.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.lblMsg.ForeColor = System.Drawing.Color.FromArgb(255, 91, 110);
-            this.lblMsg.Location = new System.Drawing.Point(26, 290);
+            this.lblMsg.Location = new System.Drawing.Point(26, 340);
             this.lblMsg.Name = "lblMsg";
-            this.lblMsg.Size = new System.Drawing.Size(346, 44);
-            this.lblMsg.TabIndex = 7;
+            this.lblMsg.Size = new System.Drawing.Size(346, 40);
+            this.lblMsg.TabIndex = 9;
+            //
+            // chkAutoLogin
+            //
+            this.chkAutoLogin.AutoSize = true;
+            this.chkAutoLogin.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.chkAutoLogin.ForeColor = System.Drawing.Color.FromArgb(138, 147, 166);
+            this.chkAutoLogin.Location = new System.Drawing.Point(28, 286);
+            this.chkAutoLogin.Name = "chkAutoLogin";
+            this.chkAutoLogin.Size = new System.Drawing.Size(220, 19);
+            this.chkAutoLogin.TabIndex = 7;
+            this.chkAutoLogin.Text = "Автовход (запомнить пароль)";
+            this.chkAutoLogin.UseVisualStyleBackColor = true;
+            //
+            // chkRunStartup
+            //
+            this.chkRunStartup.AutoSize = true;
+            this.chkRunStartup.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.chkRunStartup.ForeColor = System.Drawing.Color.FromArgb(138, 147, 166);
+            this.chkRunStartup.Location = new System.Drawing.Point(28, 311);
+            this.chkRunStartup.Name = "chkRunStartup";
+            this.chkRunStartup.Size = new System.Drawing.Size(220, 19);
+            this.chkRunStartup.TabIndex = 8;
+            this.chkRunStartup.Text = "Запускать при старте системы";
+            this.chkRunStartup.UseVisualStyleBackColor = true;
             //
             // lnkCreate
             //
@@ -122,10 +148,10 @@ namespace MyDesktop.UI
             this.lnkCreate.AutoSize = true;
             this.lnkCreate.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.lnkCreate.LinkColor = System.Drawing.Color.FromArgb(91, 140, 255);
-            this.lnkCreate.Location = new System.Drawing.Point(28, 346);
+            this.lnkCreate.Location = new System.Drawing.Point(28, 388);
             this.lnkCreate.Name = "lnkCreate";
             this.lnkCreate.Size = new System.Drawing.Size(146, 15);
-            this.lnkCreate.TabIndex = 8;
+            this.lnkCreate.TabIndex = 10;
             this.lnkCreate.TabStop = true;
             this.lnkCreate.Text = "Создать новый аккаунт";
             this.lnkCreate.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkCreate_LinkClicked);
@@ -136,7 +162,9 @@ namespace MyDesktop.UI
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(22, 26, 34);
-            this.ClientSize = new System.Drawing.Size(400, 400);
+            this.ClientSize = new System.Drawing.Size(400, 424);
+            this.Controls.Add(this.chkRunStartup);
+            this.Controls.Add(this.chkAutoLogin);
             this.Controls.Add(this.lnkCreate);
             this.Controls.Add(this.lblMsg);
             this.Controls.Add(this.btnLogin);
@@ -164,5 +192,7 @@ namespace MyDesktop.UI
         private System.Windows.Forms.Button btnLogin;
         private System.Windows.Forms.Label lblMsg;
         private System.Windows.Forms.LinkLabel lnkCreate;
+        private System.Windows.Forms.CheckBox chkAutoLogin;
+        private System.Windows.Forms.CheckBox chkRunStartup;
     }
 }

@@ -11,6 +11,7 @@ namespace MyDesktop.UI
         private readonly AppConfig _cfg;
         private StreamPanel _stream;
         private RemotePanel _remote;
+        private EffectsPanel _effects;
 
         // Для конструктора форм Visual Studio.
         public MainForm()
@@ -28,6 +29,8 @@ namespace MyDesktop.UI
             pnlContent.Controls.Add(_stream);
             _remote = new RemotePanel(_cfg) { Dock = DockStyle.Fill, Visible = false };
             pnlContent.Controls.Add(_remote);
+            _effects = new EffectsPanel { Dock = DockStyle.Fill, Visible = false };
+            pnlContent.Controls.Add(_effects);
 
             this.Shown += async (s, e) => await ShowSection("Главная");
         }
@@ -42,9 +45,11 @@ namespace MyDesktop.UI
         {
             bool stream = (name == "Трансляция");
             bool remote = (name == "Удалённый доступ");
+            bool effects = (name == "Эффекты");
             if (_stream != null) { _stream.Visible = stream; if (stream) _stream.BringToFront(); }
             if (_remote != null) { _remote.Visible = remote; if (remote) _remote.BringToFront(); }
-            bool panel = stream || remote;
+            if (_effects != null) { _effects.Visible = effects; if (effects) _effects.BringToFront(); }
+            bool panel = stream || remote || effects;
             lblContentTitle.Visible = lblContentText.Visible = !panel;
             lblStatus.Visible = (name == "Главная");
             switch (name)

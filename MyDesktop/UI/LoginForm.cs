@@ -21,6 +21,8 @@ namespace MyDesktop.UI
             _cfg = cfg;
             _api = new ApiClient(cfg);
             txtLogin.Text = _cfg.LastLogin ?? "";
+            chkAutoLogin.Checked = _cfg.AutoLogin;
+            chkRunStartup.Checked = Startup.IsEnabled();
             this.Shown += async (s, e) => await CheckFirstRun();
         }
 
@@ -86,7 +88,12 @@ namespace MyDesktop.UI
                     && acc.TryGetValue("admin", out var av) && av is bool bv)
                     admin = bv;
                 Session.Set(login, admin);
-                _cfg.LastLogin = login; _cfg.Save();
+                _cfg.LastLogin = login;
+                // автовход: сохраняем пароль только в зашифрованном виде (DPAPI)
+                _cfg.AutoLogin = chkAutoLogin.Checked;
+                _cfg.ProtectedPassword = chkAutoLogin.Checked ? Secret.Protect(pass) : "";
+                _cfg.Save();
+                Startup.Set(chkRunStartup.Checked);   // автозапуск при старте системы
                 DialogResult = DialogResult.OK;
                 Close();
             }
