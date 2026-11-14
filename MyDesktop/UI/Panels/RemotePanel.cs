@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
 using MyDesktop.Core;
 
@@ -83,11 +84,44 @@ namespace MyDesktop.UI.Panels
 
             if (!r.Ok) { SetStatus(r.Message ?? "Неверный логин или пароль.", true); return; }
 
-            // открываем экран этого логина (HLS-поток)
-            var url = _cfg.HlsBase.TrimEnd('/') + "/" + login + "/index.m3u8";
-            SetStatus("Подключено. Открываю экран: " + url, false);
-            try { Process.Start(new ProcessStartInfo { FileName = url, UseShellExecute = true }); }
-            catch (Exception ex) { SetStatus("Не удалось открыть плеер: " + ex.Message, true); }
+            // смотрим экран этого логина плеером ffplay по RTMP напрямую (без браузера, без задержки)
+            var rtmp = _cfg.RtmpUrl.TrimEnd('/') + "/" + login;
+            var ffplay = FfplayPath();
+            try
+            {
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = ffplay,
+                    Arguments = "-window_title \"MyDesktop — " + login + "\" -autoexit -fflags nobuffer -flags low_delay \"" + rtmp + "\"",
+                    UseShellExecute = false,
+                    CreateNoWindow = false
+                });
+                SetStatus("Подключено. Открываю экран (" + login + ") в плеере…", false);
+            }
+            catch (Exception ex)
+            {
+                SetStatus("Не удалось открыть плеер ffplay (" + ex.Message + "). Проверьте, что в ffmpeg есть ffplay.exe. Поток: " + rtmp, true);
+            }
+        }
+
+        // ffplay рядом с ffmpeg, либо из PATH
+        private string FfplayPath()
+        {
+            var f = _cfg.FfmpegPath;
+            if (!string.IsNullOrEmpty(f) && f.IndexOf("ffmpeg", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                try
+                {
+                    var dir = Path.GetDirectoryName(f);
+                    if (!string.IsNullOrEmpty(dir))
+                    {
+                        var cand = Path.Combine(dir, "ffplay.exe");
+                        if (File.Exists(cand)) return cand;
+                    }
+                }
+                catch { }
+            }
+            return "ffplay";
         }
 
         private void SetStatus(string text, bool error)
