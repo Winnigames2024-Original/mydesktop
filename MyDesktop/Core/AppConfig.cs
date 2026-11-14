@@ -24,7 +24,8 @@ namespace MyDesktop.Core
         public string RustdeskIdServer = VpsIp;       // hbbs :21116
         public int RustdeskIdPort = 21116;
         public string RustdeskRelay = VpsIp + ":21117";
-        public string RustdeskKey = "";               // публичный ключ сервера (из id_ed25519.pub)
+        public string RustdeskKey = "rF3Fps5QshUgnz9Q0qZuqc8JLlXI+HBjLv5pLJ+eu5k="; // публичный ключ сервера
+        public string RustdeskPath = "";              // путь к rustdesk.exe (если пусто — ищем автоматически)
 
         // Запомненный логин (без пароля)
         public string LastLogin = "";

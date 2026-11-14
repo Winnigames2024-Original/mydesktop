@@ -10,6 +10,7 @@ namespace MyDesktop.UI
     {
         private readonly AppConfig _cfg;
         private StreamPanel _stream;
+        private RemotePanel _remote;
 
         // Для конструктора форм Visual Studio.
         public MainForm()
@@ -25,6 +26,8 @@ namespace MyDesktop.UI
             // панель трансляции встраиваем в область контента (поверх текстовых заглушек)
             _stream = new StreamPanel(_cfg) { Dock = DockStyle.Fill, Visible = false };
             pnlContent.Controls.Add(_stream);
+            _remote = new RemotePanel(_cfg) { Dock = DockStyle.Fill, Visible = false };
+            pnlContent.Controls.Add(_remote);
 
             this.Shown += async (s, e) => await ShowSection("Главная");
         }
@@ -38,8 +41,11 @@ namespace MyDesktop.UI
         private async Task ShowSection(string name)
         {
             bool stream = (name == "Трансляция");
+            bool remote = (name == "Удалённый доступ");
             if (_stream != null) { _stream.Visible = stream; if (stream) _stream.BringToFront(); }
-            lblContentTitle.Visible = lblContentText.Visible = !stream;
+            if (_remote != null) { _remote.Visible = remote; if (remote) _remote.BringToFront(); }
+            bool panel = stream || remote;
+            lblContentTitle.Visible = lblContentText.Visible = !panel;
             lblStatus.Visible = (name == "Главная");
             switch (name)
             {
